@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DimeX Chain (DMXC) - Next-Gen Layer-1 Native Blockchain Protocol</title>
+    
+    <!-- External Dependencies: Tailwind, FontAwesome, Chart.js, Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgMain: '#030914',
+                        bgCard: '#0a1326',
+                        bgCardHover: '#0f1c38',
+                        borderGlow: '#1a2a4a',
+                        primaryGold: '#f3ba2f',
+                        goldHover: '#d9a220',
+                        accentCyan: '#00f2fe',
+                        accentPurple: '#a855f7',
+                        accentGreen: '#22c55e',
+                        textSub: '#8e9bb0'
+                    },
+                    boxShadow: {
+                        'gold-glow': '0 0 25px rgba(243, 186, 47, 0.4)',
+                        'cyan-glow': '0 0 25px rgba(0, 242, 254, 0.4)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+        
+        * { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
+        .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+        body { background-color: #030914; color: #ffffff; overflow-x: hidden; }
+
+        .glass-nav {
+            background: rgba(10, 19, 38, 0.85);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(243, 186, 47, 0.2);
+        }
+
+        .glass-panel {
+            background: rgba(10, 19, 38, 0.7);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(26, 42, 74, 0.8);
+        }
+
+        .glass-panel-gold {
+            background: linear-gradient(135deg, rgba(10, 19, 38, 0.9) 0%, rgba(243, 186, 47, 0.08) 100%);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(243, 186, 47, 0.35);
+        }
+
+        .gradient-text-gold-cyan {
+            background: linear-gradient(135deg, #f3ba2f 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-btn-gold {
+            background: linear-gradient(135deg, #f3ba2f 0%, #ff9900 100%);
+            color: #000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .gradient-btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(243, 186, 47, 0.65);
+        }
+
+        .cyan-outline-btn {
+            border: 2px solid #00f2fe;
+            color: #00f2fe;
+            transition: all 0.3s ease;
+        }
+        .cyan-outline-btn:hover {
+            background: #00f2fe;
+            color: #030914;
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.5);
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-14px) rotate(1deg); }
+        }
+        .animate-float { animation: floatSlow 6s ease-in-out infinite; }
+
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #030914; }
+        ::-webkit-scrollbar-thumb { background: #1a2a4a; border-radius: 4px; }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col justify-between selection:bg-primaryGold selection:text-black">
+
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Global Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 ease-out glass-panel border border-primaryGold text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-primaryGold/20 flex items-center justify-center text-primaryGold">
+            <i class="fa-solid fa-check" id="toast-icon"></i>
+        </div>
+        <div>
+            <h4 class="text-xs font-bold uppercase tracking-wider text-primaryGold">Notification</h4>
+            <p id="toast-msg" class="text-sm font-medium text-white">Copied to clipboard!</p>
+        </div>
+    </div>
+
+    <!-- Sticky Navigation Bar -->
+    <header class="sticky top-0 z-40 glass-nav px-4 lg:px-12 py-3 flex items-center justify-between transition-all duration-300">
+        <a href="https://raw.githubusercontent.com/glomartcom-netizen/Home/main/applogo.jpg" target="_blank" class="flex items-center gap-3 group">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-primaryGold/20 to-accentCyan/20 p-1 flex items-center justify-center relative">
+                <img src="https://raw.githubusercontent.com/dimexchain-coder/native/main/dimex-logo-512x512-removebg-preview.png" alt="DimeX Logo" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300">
+            </div>
+            <div>
+                <span class="text-xl font-black tracking-wider text-white uppercase block leading-none">DimeX<span class="text-primaryGold">Chain</span></span>
+                <span class="text-[10px] text-accentCyan font-mono tracking-widest uppercase block mt-1">Native L1 Protocol</span>
+            </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-textSub">
+            <a href="#about" class="hover:text-primaryGold transition-colors">About Native Coin</a>
+            <a href="#rpc-section" class="hover:text-primaryGold transition-colors">RPC Setup</a>
+            <a href="#ecosystem" class="hover:text-primaryGold transition-colors">Ecosystem</a>
+            <a href="#calculator" class="hover:text-primaryGold transition-colors">Staking Yield</a>
+            <a href="#tokenomics" class="hover:text-primaryGold transition-colors">Tokenomics</a>
+            <a href="#roadmap" class="hover:text-primaryGold transition-colors">Roadmap</a>
+            <a href="https://raw.githubusercontent.com/dimex1601-dev/DimeX---Profile-/main/DimeX%20(DMX)%20%20Whitepaper.pdf" target="_blank" class="hover:text-primaryGold transition-colors flex items-center gap-1.5 text-accentCyan">
+                <i class="fa-solid fa-file-pdf"></i> Whitepaper
+            </a>
+        </nav>
+
+        <!-- Right Side Header Actions -->
+        <div class="flex items-center gap-3">
+            <a href="https://www.dimexchain.tech/dash" target="_blank" class="hidden sm:flex gradient-btn-gold px-4 py-2.5 rounded-xl font-extrabold text-xs uppercase tracking-wider items-center gap-2">
+                <i class="fa-solid fa-vault"></i> Native Staking
+            </a>
+
+            <!-- Mobile Hamburger Menu Button -->
+            <button onclick="toggleMobileMenu()" class="lg:hidden w-10 h-10 rounded-xl bg-bgCard border border-borderGlow text-white flex items-center justify-center text-xl">
+                <i class="fa-solid fa-bars" id="menu-icon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Menu -->
+    <div id="mobile-menu" class="fixed top-[69px] left-0 w-full bg-bgCard/95 border-b border-borderGlow backdrop-blur-2xl p-6 flex flex-col gap-4 hidden z-30 lg:hidden transition-all">
+        <a href="#about" onclick="toggleMobileMenu()" class="text-white font-medium py-2 border-b border-borderGlow/50 flex justify-between items-center">
+            <span>About Native Coin</span> <i class="fa-solid fa-chevron-right text-xs text-textSub"></i>
+        </a>
+        <a href="#rpc-section" onclick="toggleMobileMenu()" class="text-white font-medium py-2 border-b border-borderGlow/50 flex justify-between items-center">
+            <span>RPC Parameters</span> <i class="fa-solid fa-chevron-right text-xs text-textSub"></i>
+        </a>
+        <a href="#ecosystem" onclick="toggleMobileMenu()" class="text-white font-medium py-2 border-b border-borderGlow/50 flex justify-between items-center">
+            <span>Ecosystem Portals</span> <i class="fa-solid fa-chevron-right text-xs text-textSub"></i>
+        </a>
+        <a href="#calculator" onclick="toggleMobileMenu()" class="text-white font-medium py-2 border-b border-borderGlow/50 flex justify-between items-center">
+            <span>Staking Calculator</span> <i class="fa-solid fa-chevron-right text-xs text-textSub"></i>
+        </a>
+        <a href="#tokenomics" onclick="toggleMobileMenu()" class="text-white font-medium py-2 border-b border-borderGlow/50 flex justify-between items-center">
+            <span>Tokenomics</span> <i class="fa-solid fa-chevron-right text-xs text-textSub"></i>
+        </a>
+        <a href="#roadmap" onclick="toggleMobileMenu()" class="text-white font-medium py-2 flex justify-between items-center">
+            <span>Roadmap</span> <i class="fa-solid fa-chevron-right text-xs text-textSub"></i>
+        </a>
+
+        <div class="pt-2 flex flex-col gap-3">
+            <a href="https://www.dimexchain.tech/dash" target="_blank" class="gradient-btn-gold w-full text-center py-3 rounded-xl font-bold text-sm">
+                <i class="fa-solid fa-vault"></i> Native Staking
+            </a>
+            <a href="https://www.dimex.tech/dash" target="_blank" class="cyan-outline-btn w-full text-center py-3 rounded-xl font-bold text-sm">
+                <i class="fa-solid fa-coins"></i> Token Staking
+            </a>
+        </div>
+    </div>
+
+    <main class="relative z-10 flex-grow">
+
+        <!-- HERO SECTION -->
+        <section class="max-w-7xl mx-auto px-4 lg:px-12 py-16 lg:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <div class="lg:col-span-7 text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 bg-accentCyan/10 border border-accentCyan/30 px-4 py-1.5 rounded-full text-xs font-bold text-accentCyan mb-6">
+                    <span class="w-2.5 h-2.5 rounded-full bg-accentGreen animate-ping"></span>
+                    <span>Chain ID: 1723 | QBFT Mainnet Active</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black leading-none tracking-tight mb-6">
+                    Powering The Next <br />
+                    <span class="gradient-text-gold-cyan">Native Layer-1</span> <br />
+                    Blockchain Standard
+                </h1>
+
+                <p class="text-textSub text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed">
+                    DimeX Chain (DMXC) delivers ultra-fast block finality, near-zero transaction fees, 10 Billion native coin supply, and native multi-tier staking contracts designed for sustainable crypto economies.
+                </p>
+
+                <!-- Hero Action CTAs -->
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                    <a href="https://www.dimexchain.tech/dash" target="_blank" class="gradient-btn-gold px-7 py-4 rounded-xl font-black text-sm uppercase tracking-wider flex items-center gap-2.5">
+                        <i class="fa-solid fa-vault text-base"></i> Native Coin Staking
+                    </a>
+
+                    <a href="https://www.dimex.tech/dash" target="_blank" class="bg-accentCyan/10 border-2 border-accentCyan text-accentCyan hover:bg-accentCyan hover:text-black transition-all duration-300 px-7 py-3.5 rounded-xl font-extrabold text-sm uppercase tracking-wider flex items-center gap-2 shadow-cyan-glow">
+                        <i class="fa-solid fa-coins text-base"></i> Token Staking
+                    </a>
+
+                    <button onclick="addDimeXNetwork()" class="glass-panel hover:border-primaryGold transition-all duration-300 px-6 py-4 rounded-xl font-bold text-sm text-white flex items-center gap-2">
+                        <i class="fa-solid fa-network-wired text-primaryGold"></i> Add RPC Network
+                    </button>
+                </div>
+
+                <!-- Live Quick Stats Bar -->
+                <div class="grid grid-cols-3 gap-4 mt-12 pt-8 border-t border-borderGlow/60 max-w-xl mx-auto lg:mx-0">
+                    <div>
+                        <span class="text-[11px] uppercase tracking-wider text-textSub block mb-1">Total Supply</span>
+                        <span class="text-xl sm:text-2xl font-extrabold text-primaryGold">10 Billion</span>
+                    </div>
+                    <div>
+                        <span class="text-[11px] uppercase tracking-wider text-textSub block mb-1">Block Time</span>
+                        <span class="text-xl sm:text-2xl font-extrabold text-accentCyan">~2.0s</span>
+                    </div>
+                    <div>
+                        <span class="text-[11px] uppercase tracking-wider text-textSub block mb-1">Validators</span>
+                        <span class="text-xl sm:text-2xl font-extrabold text-white">4 Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Hero 3D Card Showcase -->
+            <div class="lg:col-span-5 relative flex justify-center">
+                <div class="absolute w-80 h-80 bg-primaryGold/20 rounded-full blur-3xl -z-10 animate-pulse"></div>
+                <div class="absolute w-60 h-60 bg-accentCyan/20 rounded-full blur-3xl -z-10 animate-pulse delay-1000"></div>
+
+                <div class="w-full max-w-md glass-panel-gold rounded-3xl p-6 sm:p-8 shadow-2xl relative animate-float">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-primaryGold/20 via-amber-400/10 to-accentCyan/20 p-1 shadow-gold-glow flex items-center justify-center">
+                                <img src="https://raw.githubusercontent.com/dimexchain-coder/native/main/dimex-logo-512x512-removebg-preview.png" alt="DimeX Logo" class="w-full h-full object-contain">
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-black text-white">DimeX Smart Coin</h3>
+                                <span class="text-xs text-primaryGold font-mono font-bold">DMXC Native Token</span>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-accentGreen/20 text-accentGreen border border-accentGreen/40">
+                            Live Sealing
+                        </span>
+                    </div>
+
+                    <div class="bg-bgMain/80 rounded-2xl p-4 border border-borderGlow mb-6">
+                        <div class="flex justify-between items-center text-xs text-textSub mb-2">
+                            <span>Current Live Block</span>
+                            <span class="text-accentCyan font-mono font-bold flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-accentGreen inline-block"></span> Syncing
+                            </span>
+                        </div>
+                        <div class="flex items-baseline justify-between">
+                            <span id="hero-block-counter" class="text-2xl font-mono font-extrabold text-white">#12,845</span>
+                            <span class="text-xs text-textSub">QBFT 4-Node Consensus</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-xs text-textSub">
+                            <span>Network RPC Endpoint</span>
+                            <span class="text-accentCyan font-mono">https://rpc.dimexchain.tech</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-textSub">
+                            <span>Gas Fees (Average)</span>
+                            <span class="text-accentGreen font-mono font-bold">&lt; $0.00001</span>
+                        </div>
+
+                        <a href="https://www.dimexchain.tech/dash" target="_blank" class="gradient-btn-gold block text-center w-full py-3 rounded-xl font-extrabold text-xs uppercase tracking-wider mt-4">
+                            Launch Native Staking Dash
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LIVE BLOCKCHAIN METRICS COUNTERS -->
+        <section class="max-w-7xl mx-auto px-4 lg:px-12 mb-20">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-panel p-6 rounded-2xl border-borderGlow">
+                    <span class="text-xs font-bold uppercase tracking-wider text-textSub block mb-4">Total Coin Supply</span>
+                    <h3 class="text-3xl font-black text-white font-mono">10,000,000,000</h3>
+                    <p class="text-xs text-textSub mt-2">DMXC Native Capped Allocation</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border-borderGlow">
+                    <span class="text-xs font-bold uppercase tracking-wider text-textSub block mb-4">Native Chain ID</span>
+                    <h3 class="text-3xl font-black text-accentCyan font-mono">1723</h3>
+                    <p class="text-xs text-textSub mt-2">Hex: 0x6BB / EVM Compatible</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border-borderGlow">
+                    <span class="text-xs font-bold uppercase tracking-wider text-textSub block mb-4">Avg Block Time</span>
+                    <h3 class="text-3xl font-black text-white font-mono">2.0 Seconds</h3>
+                    <p class="text-xs text-textSub mt-2">Instant Sealing & Finality</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border-borderGlow">
+                    <span class="text-xs font-bold uppercase tracking-wider text-textSub block mb-4">Network Consensus</span>
+                    <h3 class="text-3xl font-black text-accentGreen font-mono">QBFT 4 Nodes</h3>
+                    <p class="text-xs text-textSub mt-2">Byzantine Fault Tolerant</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT NATIVE COIN SECTION -->
+        <section id="about" class="max-w-7xl mx-auto px-4 lg:px-12 mb-24 scroll-mt-28">
+            <div class="glass-panel rounded-3xl p-8 lg:p-12 border-borderGlow">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-primaryGold bg-primaryGold/10 px-3 py-1 rounded-full border border-primaryGold/30">
+                    Layer-1 Native Technology
+                </span>
+                <h2 class="text-3xl lg:text-4xl font-black text-white mt-4 mb-6">What is DimeX Chain (DMXC)?</h2>
+                <p class="text-textSub leading-relaxed mb-4">
+                    DimeX Chain is an enterprise-grade, EVM-compatible Layer-1 native blockchain. Built on QBFT consensus, DimeX guarantees instant transaction execution without network congestion or high gas fees.
+                </p>
+                <p class="text-textSub leading-relaxed">
+                    DMXC is the true native fuel powering smart contracts, validator rewards, cross-chain DEX liquidity, and native level-based staking protocols.
+                </p>
+            </div>
+        </section>
+
+        <!-- RPC PARAMETERS & ONE-CLICK CONNECT (RPC URL RESTORED) -->
+        <section id="rpc-section" class="max-w-7xl mx-auto px-4 lg:px-12 mb-24 scroll-mt-28">
+            <div class="glass-panel-gold rounded-3xl p-8 lg:p-12">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-accentCyan">Mainnet Connection Parameters</span>
+                        <h2 class="text-2xl lg:text-3xl font-black text-white mt-1">Configure Wallet for DimeX Chain</h2>
+                    </div>
+                    <button onclick="addDimeXNetwork()" class="gradient-btn-gold px-6 py-3.5 rounded-xl font-black text-xs uppercase tracking-wider flex items-center gap-2 justify-center shadow-gold-glow">
+                        <i class="fa-solid fa-plug text-sm"></i> Auto-Add DimeX to MetaMask
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div class="bg-bgMain/90 p-4 rounded-xl border border-borderGlow flex justify-between items-center">
+                        <div>
+                            <span class="text-[11px] text-textSub uppercase block mb-1">Network Name</span>
+                            <span class="font-bold text-primaryGold font-mono text-sm">DimeX Chain</span>
+                        </div>
+                        <button onclick="copyToClipboard('DimeX Chain', 'Network Name')" class="text-textSub hover:text-primaryGold text-base p-2"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                    <div class="bg-bgMain/90 p-4 rounded-xl border border-borderGlow flex justify-between items-center">
+                        <div>
+                            <span class="text-[11px] text-textSub uppercase block mb-1">Chain ID</span>
+                            <span class="font-bold text-accentCyan font-mono text-sm">1723 (0x6BB)</span>
+                        </div>
+                        <button onclick="copyToClipboard('1723', 'Chain ID')" class="text-textSub hover:text-accentCyan text-base p-2"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                    <div class="bg-bgMain/90 p-4 rounded-xl border border-borderGlow flex justify-between items-center">
+                        <div>
+                            <span class="text-[11px] text-textSub uppercase block mb-1">Symbol</span>
+                            <span class="font-bold text-primaryGold font-mono text-sm">DMXC</span>
+                        </div>
+                        <button onclick="copyToClipboard('DMXC', 'Symbol')" class="text-textSub hover:text-primaryGold text-base p-2"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                    <div class="bg-bgMain/90 p-4 rounded-xl border border-borderGlow flex justify-between items-center">
+                        <div>
+                            <span class="text-[11px] text-textSub uppercase block mb-1">RPC URL</span>
+                            <span class="font-bold text-accentCyan font-mono text-xs truncate">https://rpc.dimexchain.tech</span>
+                        </div>
+                        <button onclick="copyToClipboard('https://rpc.dimexchain.tech', 'RPC URL')" class="text-textSub hover:text-accentCyan text-base p-2"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                    <div class="bg-bgMain/90 p-4 rounded-xl border border-borderGlow flex justify-between items-center">
+                        <div>
+                            <span class="text-[11px] text-textSub uppercase block mb-1">Decimals</span>
+                            <span class="font-bold text-white font-mono text-sm">18</span>
+                        </div>
+                        <button onclick="copyToClipboard('18', 'Decimals')" class="text-textSub hover:text-white text-base p-2"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ECOSYSTEM PORTALS (CEX LINK & NATIVE/TOKEN STAKING UPDATED) -->
+        <section id="ecosystem" class="max-w-7xl mx-auto px-4 lg:px-12 mb-24 scroll-mt-28">
+            <div class="text-center mb-12">
+                <span class="text-xs font-bold uppercase tracking-widest text-primaryGold">Complete Native Infrastructure</span>
+                <h2 class="text-3xl lg:text-4xl font-black text-white mt-1">DimeX Native Ecosystem</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Native Staking -->
+                <div class="glass-panel p-8 rounded-3xl border-borderGlow flex flex-col justify-between hover:border-primaryGold transition-all">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-primaryGold/10 border border-primaryGold/40 text-primaryGold flex items-center justify-center text-2xl mb-6">
+                            <i class="fa-solid fa-vault"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-white mb-2">Native Coin Staking</h3>
+                        <p class="text-xs text-textSub leading-relaxed mb-6">Lock your native DMXC coins into high-yield native staking pools.</p>
+                    </div>
+                    <a href="https://www.dimexchain.tech/dash" target="_blank" class="gradient-btn-gold w-full text-center py-3 rounded-xl font-bold text-xs uppercase tracking-wider">Native Staking Dash</a>
+                </div>
+
+                <!-- Token Staking -->
+                <div class="glass-panel p-8 rounded-3xl border-borderGlow flex flex-col justify-between hover:border-accentCyan transition-all">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-accentCyan/10 border border-accentCyan/40 text-accentCyan flex items-center justify-center text-2xl mb-6">
+                            <i class="fa-solid fa-coins"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-white mb-2">Token Staking</h3>
+                        <p class="text-xs text-textSub leading-relaxed mb-6">Token portal for high-yield staking vaults.</p>
+                    </div>
+                    <a href="https://www.dimex.tech/dash" target="_blank" class="cyan-outline-btn w-full text-center py-3 rounded-xl font-bold text-xs uppercase tracking-wider">Token Staking Dash</a>
+                </div>
+
+                <!-- Block Explorer -->
+                <div class="glass-panel p-8 rounded-3xl border-borderGlow flex flex-col justify-between hover:border-accentPurple transition-all">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-accentPurple/10 border border-accentPurple/40 text-accentPurple flex items-center justify-center text-2xl mb-6">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-white mb-2">Block Explorer</h3>
+                        <p class="text-xs text-textSub leading-relaxed mb-6">Inspect live blocks, track wallet balances, verify smart contracts.</p>
+                    </div>
+                    <a href="https://explorer.dimexchain.tech" target="_blank" class="border-2 border-accentPurple text-accentPurple hover:bg-accentPurple hover:text-white transition-all w-full text-center py-3 rounded-xl font-bold text-xs uppercase tracking-wider">Open Explorer</a>
+                </div>
+
+                <!-- Native CEX Link (URL: www.cex.dimexchain.tech) -->
+                <div class="glass-panel p-8 rounded-3xl border-borderGlow flex flex-col justify-between hover:border-accentGreen transition-all">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-accentGreen/10 border border-accentGreen/40 text-accentGreen flex items-center justify-center text-2xl mb-6">
+                            <i class="fa-solid fa-right-left"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-white mb-2">DimeX CEX Exchange</h3>
+                        <p class="text-xs text-textSub leading-relaxed mb-6">Official DimeX Centralized Exchange Portal for native trading.</p>
+                    </div>
+                    <a href="https://www.cex.dimexchain.tech" target="_blank" class="border-2 border-accentGreen text-accentGreen hover:bg-accentGreen hover:text-black transition-all w-full text-center py-3 rounded-xl font-bold text-xs uppercase tracking-wider">Open CEX Portal</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- YIELD CALCULATOR ONLY -->
+        <section id="calculator" class="max-w-4xl mx-auto px-4 lg:px-12 mb-24 scroll-mt-28">
+            <div class="glass-panel rounded-3xl p-8 lg:p-12 border-borderGlow">
+                <div class="text-center mb-10">
+                    <span class="text-xs font-bold uppercase tracking-widest text-primaryGold bg-primaryGold/10 px-3 py-1 rounded-full border border-primaryGold/30">
+                        Yield Calculator
+                    </span>
+                    <h2 class="text-3xl font-black text-white mt-3">Calculate Expected Yield</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                    <div class="lg:col-span-7 space-y-6">
+                        <div>
+                            <label class="text-xs font-bold uppercase tracking-wider text-textSub block mb-3">Select Plan Period</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="setPlan(180, 0.0025)" id="plan-180" class="plan-btn py-3 rounded-xl border border-primaryGold bg-primaryGold/20 text-primaryGold font-bold text-xs">
+                                    6 Months (0.25%/day)
+                                </button>
+                                <button onclick="setPlan(365, 0.0030)" id="plan-365" class="plan-btn py-3 rounded-xl border border-borderGlow bg-bgMain text-textSub font-bold text-xs">
+                                    1 Year (0.30%/day)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-bold mb-2">
+                                <span class="text-textSub">Deposit Amount (DMXC)</span>
+                                <span id="calc-amount-display" class="text-primaryGold font-mono text-sm">100,000 DMXC</span>
+                            </div>
+                            <input type="range" id="calc-slider" min="10000" max="10000000" step="10000" value="100000" class="w-full h-2.5 bg-bgMain rounded-lg appearance-none cursor-pointer accent-primaryGold">
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 bg-bgMain p-6 rounded-2xl border border-borderGlow flex flex-col gap-4">
+                        <h4 class="text-xs font-extrabold uppercase tracking-widest text-textSub border-b border-borderGlow pb-3">Yield Summary</h4>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-textSub">Daily Yield</span>
+                            <span id="calc-daily" class="font-mono font-bold text-primaryGold">250 DMXC</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-textSub">Total Return</span>
+                            <span id="calc-total" class="font-mono font-bold text-accentCyan">45,000 DMXC</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm pt-2 border-t border-borderGlow/60">
+                            <span class="text-textSub font-bold">USD Value (~$0.10)</span>
+                            <span id="calc-usd" class="font-mono font-black text-xl text-accentGreen">$4,500.00</span>
+                        </div>
+                        <a href="https://www.dimexchain.tech/dash" target="_blank" class="gradient-btn-gold block text-center w-full py-3.5 rounded-xl font-extrabold text-xs uppercase tracking-wider mt-2">Open Staking Portal</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOKENOMICS SECTION -->
+        <section id="tokenomics" class="max-w-7xl mx-auto px-4 lg:px-12 mb-24 scroll-mt-28">
+            <div class="glass-panel rounded-3xl p-8 lg:p-12 border-borderGlow">
+                <div class="text-center mb-12">
+                    <span class="text-xs font-bold uppercase tracking-widest text-accentCyan">Transparent Token Allocation</span>
+                    <h2 class="text-3xl lg:text-4xl font-black text-white mt-1">10 Billion Total Supply Distribution</h2>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                    <div class="lg:col-span-5 flex justify-center">
+                        <div class="w-full max-w-xs aspect-square relative"><canvas id="tokenomicsChart"></canvas></div>
+                    </div>
+                    <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-bgMain p-4 rounded-2xl border border-borderGlow">
+                            <h4 class="font-bold text-white text-sm mb-1">Staking Rewards</h4>
+                            <span class="text-2xl font-black text-primaryGold font-mono">40%</span>
+                        </div>
+                        <div class="bg-bgMain p-4 rounded-2xl border border-borderGlow">
+                            <h4 class="font-bold text-white text-sm mb-1">Ecosystem & Treasury</h4>
+                            <span class="text-2xl font-black text-accentCyan font-mono">25%</span>
+                        </div>
+                        <div class="bg-bgMain p-4 rounded-2xl border border-borderGlow">
+                            <h4 class="font-bold text-white text-sm mb-1">Liquidity & CEX Reserve</h4>
+                            <span class="text-2xl font-black text-accentPurple font-mono">20%</span>
+                        </div>
+                        <div class="bg-bgMain p-4 rounded-2xl border border-borderGlow">
+                            <h4 class="font-bold text-white text-sm mb-1">Core Team & Advisors</h4>
+                            <span class="text-2xl font-black text-accentGreen font-mono">15%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROADMAP SECTION -->
+        <section id="roadmap" class="max-w-5xl mx-auto px-4 lg:px-12 mb-24 scroll-mt-28">
+            <div class="text-center mb-12">
+                <span class="text-xs font-bold uppercase tracking-widest text-primaryGold">Strategic Execution</span>
+                <h2 class="text-3xl lg:text-4xl font-black text-white mt-1">Ecosystem Roadmap & CEX Target</h2>
+            </div>
+            <div class="relative border-l-2 border-borderGlow ml-4 lg:ml-32 space-y-10">
+                <div class="relative pl-8">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-accentGreen/20 border-2 border-accentGreen text-accentGreen flex items-center justify-center text-xs font-bold"><i class="fa-solid fa-check"></i></div>
+                    <div class="glass-panel p-6 rounded-2xl border-borderGlow">
+                        <span class="text-xs font-bold text-accentGreen uppercase tracking-wider block mb-1">Phase 1 - Completed</span>
+                        <h3 class="text-xl font-bold text-white mb-2">Mainnet Launch & QBFT Genesis</h3>
+                        <p class="text-xs text-textSub leading-relaxed">4-Node QBFT validator cluster deployment, 10B genesis allocation, RPC setup, and Explorer deployment.</p>
+                    </div>
+                </div>
+                <div class="relative pl-8">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-primaryGold/20 border-2 border-primaryGold text-primaryGold flex items-center justify-center text-xs font-bold">2</div>
+                    <div class="glass-panel p-6 rounded-2xl border-primaryGold/40">
+                        <span class="text-xs font-bold text-primaryGold uppercase tracking-wider block mb-1">Phase 2 - Active Live</span>
+                        <h3 class="text-xl font-bold text-white mb-2">Staking Contracts & Portal Integration</h3>
+                        <p class="text-xs text-textSub leading-relaxed">Deployment of level-based staking smart contracts, official web dashboard integration.</p>
+                    </div>
+                </div>
+                <div class="relative pl-8">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-bgCard border-2 border-borderGlow text-textSub flex items-center justify-center text-xs font-bold">3</div>
+                    <div class="glass-panel p-6 rounded-2xl border-borderGlow">
+                        <span class="text-xs font-bold text-accentCyan uppercase tracking-wider block mb-1">Phase 3 - Upcoming</span>
+                        <h3 class="text-xl font-bold text-white mb-2">Native DEX & Bridge Development</h3>
+                        <p class="text-xs text-textSub leading-relaxed">Launch of native decentralized swap hub and cross-chain wrapping bridge.</p>
+                    </div>
+                </div>
+                <div class="relative pl-8">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-bgCard border-2 border-borderGlow text-textSub flex items-center justify-center text-xs font-bold">4</div>
+                    <div class="glass-panel p-6 rounded-2xl border-borderGlow">
+                        <span class="text-xs font-bold text-accentPurple uppercase tracking-wider block mb-1">Phase 4 - Target 1 Year</span>
+                        <h3 class="text-xl font-bold text-white mb-2">Centralized Exchange (CEX) Listing Target</h3>
+                        <p class="text-xs text-textSub leading-relaxed">Official DimeX Native Coin listing on Centralized Exchanges (CEX) targeted 1 year from now.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#02060e] border-t border-borderGlow/80 relative z-10 py-12 px-4 lg:px-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
+            
+            <div class="md:col-span-5">
+                <a href="#" class="flex items-center gap-3 mb-4">
+                    <div class="w-8 h-8 rounded-lg bg-primaryGold/20 p-0.5 border border-primaryGold flex items-center justify-center">
+                        <img src="https://raw.githubusercontent.com/dimexchain-coder/native/main/dimex-logo-512x512-removebg-preview.png" alt="DimeX Logo" class="w-full h-full object-contain">
+                    </div>
+                    <span class="text-xl font-black text-white tracking-wider uppercase">DimeX Chain</span>
+                </a>
+                <p class="text-xs text-textSub max-w-sm leading-relaxed mb-4">
+                    DimeX Chain is a decentralized high-speed Layer-1 native blockchain network powering scalable financial utilities.
+                </p>
+                <span class="text-xs text-textSub block font-mono">
+                    Official Contact: <a href="mailto:info@dimex.world" class="text-accentCyan hover:underline">info@dimex.world</a>
+                </span>
+            </div>
+
+            <div class="md:col-span-3">
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-4">Portals & Tools</h4>
+                <ul class="space-y-2 text-xs text-textSub">
+                    <li><a href="https://www.dimexchain.tech/dash" target="_blank" class="hover:text-primaryGold">Native Staking Dash</a></li>
+                    <li><a href="https://www.dimex.tech/dash" target="_blank" class="hover:text-primaryGold">Token Staking</a></li>
+                    <li><a href="https://explorer.dimexchain.tech" target="_blank" class="hover:text-primaryGold">Block Explorer</a></li>
+                    <li><a href="https://www.cex.dimexchain.tech" target="_blank" class="hover:text-primaryGold">CEX Portal</a></li>
+                </ul>
+            </div>
+
+            <div class="md:col-span-4">
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-4">Community Ecosystem</h4>
+                <div class="flex items-center gap-4 text-xl">
+                    <a href="https://t.me/" target="_blank" class="w-10 h-10 rounded-xl bg-bgCard border border-borderGlow text-textSub hover:text-accentCyan hover:border-accentCyan flex items-center justify-center transition-all" title="Telegram Community">
+                        <i class="fa-brands fa-telegram"></i>
+                    </a>
+                    <a href="https://x.com/DimeXGlobal" target="_blank" class="w-10 h-10 rounded-xl bg-bgCard border border-borderGlow text-textSub hover:text-accentCyan hover:border-accentCyan flex items-center justify-center transition-all" title="X (Twitter)">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </a>
+                    <a href="https://github.com/dimex1601-dev" target="_blank" class="w-10 h-10 rounded-xl bg-bgCard border border-borderGlow text-textSub hover:text-accentCyan hover:border-accentCyan flex items-center justify-center transition-all" title="GitHub Repository">
+                        <i class="fa-brands fa-github"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="max-w-7xl mx-auto pt-8 border-t border-borderGlow/40 flex flex-col sm:flex-row justify-between items-center text-xs text-textSub gap-4">
+            <p>&copy; 2026 DimeX Chain Ecosystem. All Rights Reserved.</p>
+            <p class="font-mono">Chain ID: 1723 | QBFT Consensus Active</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.color = Math.random() > 0.5 ? '#f3ba2f' : '#00f2fe';
+                this.alpha = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.save(); ctx.globalAlpha = this.alpha; ctx.fillStyle = this.color;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+            }
+        }
+        for (let i = 0; i < 50; i++) particles.push(new Particle());
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            menu.classList.toggle('hidden');
+            icon.className = menu.classList.contains('hidden') ? 'fa-solid fa-bars' : 'fa-solid fa-xmark';
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-24', 'opacity-0'), 3000);
+        }
+
+        function copyToClipboard(text, label) {
+            const dummy = document.createElement("input");
+            document.body.appendChild(dummy); dummy.value = text; dummy.select();
+            document.execCommand("copy"); document.body.removeChild(dummy);
+            showToast(`${label} copied to clipboard!`);
+        }
+
+        async function addDimeXNetwork() {
+            if (window.ethereum) {
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: '0x6BB',
+                            chainName: 'DimeX Chain',
+                            nativeCurrency: { name: 'DimeX Smart Coin', symbol: 'DMXC', decimals: 18 },
+                            rpcUrls: ['https://rpc.dimexchain.tech'],
+                            blockExplorerUrls: ['https://explorer.dimexchain.tech']
+                        }]
+                    });
+                    showToast("DimeX Chain added to wallet!");
+                } catch (error) { showToast("Failed to add network."); }
+            } else { alert("MetaMask not installed!"); }
+        }
+
+        let selectedDailyRate = 0.0025, selectedDays = 180;
+        const slider = document.getElementById('calc-slider'), display = document.getElementById('calc-amount-display');
+        const dailyEl = document.getElementById('calc-daily'), totalEl = document.getElementById('calc-total'), usdEl = document.getElementById('calc-usd');
+
+        function setPlan(days, rate) {
+            selectedDays = days; selectedDailyRate = rate;
+            document.querySelectorAll('.plan-btn').forEach(btn => {
+                btn.className = "plan-btn py-3 rounded-xl border border-borderGlow bg-bgMain text-textSub font-bold text-xs";
+            });
+            document.getElementById(`plan-${days}`).className = "plan-btn py-3 rounded-xl border border-primaryGold bg-primaryGold/20 text-primaryGold font-bold text-xs";
+            updateCalculator(slider.value);
+        }
+
+        function updateCalculator(val) {
+            const amount = parseFloat(val) || 0;
+            display.innerText = `${amount.toLocaleString()} DMXC`;
+            const daily = amount * selectedDailyRate;
+            const total = daily * selectedDays;
+            const usd = total * 0.10;
+
+            dailyEl.innerText = `${daily.toLocaleString()} DMXC`;
+            totalEl.innerText = `${total.toLocaleString()} DMXC`;
+            usdEl.innerText = `$${usd.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+        }
+        slider.addEventListener('input', (e) => updateCalculator(e.target.value));
+
+        window.addEventListener('load', () => {
+            const ctxChart = document.getElementById('tokenomicsChart').getContext('2d');
+            new Chart(ctxChart, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Staking', 'Ecosystem', 'Liquidity', 'Team'],
+                    datasets: [{ data: [40, 25, 20, 15], backgroundColor: ['#f3ba2f', '#00f2fe', '#a855f7', '#22c55e'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '70%' }
+            });
+        });
+    </script>
+</body>
+</html>
