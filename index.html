@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DimeX Chain (DMXC) - Grand L1 Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#F59E0B',
+                            amber: '#D97706',
+                            cyan: '#06B6D4',
+                            dark: '#0B0F17',
+                            card: 'rgba(17, 24, 39, 0.75)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Tokenomics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #070A10;
+            color: #F3F4F6;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(245, 158, 11, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card {
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(245, 158, 11, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.15);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 50%, #D97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cyan-gradient-text {
+            background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-glow {
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; filter: blur(20px); }
+            50% { opacity: 0.8; filter: blur(30px); }
+        }
+        .glow-bg {
+            animation: pulseGlow 6s infinite ease-in-out;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #070A10; }
+        ::-webkit-scrollbar-thumb { background: #1F2937; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #F59E0B; }
+    </style>
+</head>
+<body class="relative min-h-screen selection:bg-amber-500 selection:text-black">
+
+    <!-- Particle Background Canvas & Glow -->
+    <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+    <div class="fixed top-1/4 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full glow-bg pointer-events-none z-0"></div>
+    <div class="fixed bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full glow-bg pointer-events-none z-0"></div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 w-full glass-panel border-b border-amber-500/20 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-3">
+                <img src="https://raw.githubusercontent.com/dimexchain-coder/native/main/dimex-logo-512x512-removebg-preview.png" 
+                     alt="DimeX Logo" class="h-11 w-11 object-contain drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]"
+                     onerror="this.src='https://placehold.co/100x100/111827/F59E0B?text=DMXC'">
+                <div class="flex flex-col">
+                    <span class="text-2xl font-black tracking-wider gold-gradient-text">DimeX<span class="text-cyan-400">CHAIN</span></span>
+                    <span class="text-[10px] text-gray-400 tracking-widest uppercase">Layer-1 Infrastructure</span>
+                </div>
+            </a>
+
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <a href="index.html" class="text-amber-400 flex items-center gap-2"><i class="fas fa-home"></i> Home</a>
+                <a href="dash.html" class="text-gray-300 hover:text-amber-400 transition-colors flex items-center gap-2"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="#tokenomics" class="text-gray-300 hover:text-amber-400 transition-colors flex items-center gap-2"><i class="fas fa-pie-chart"></i> Tokenomics</a>
+                <a href="#calculator" class="text-gray-300 hover:text-amber-400 transition-colors flex items-center gap-2"><i class="fas fa-calculator"></i> Yield Calculator</a>
+            </nav>
+
+            <a href="dash.html" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-sm shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2">
+                <i class="fas fa-rocket text-black"></i> Launch Dashboard
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16 space-y-16">
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center min-h-[75vh]">
+            <div class="lg:col-span-7 space-y-8">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    Chain ID: 1723 • Mainnet Live
+                </div>
+
+                <h1 class="text-4xl sm:text-6xl font-black leading-tight">
+                    Next-Gen Native <br>
+                    <span class="gold-gradient-text">Layer-1 Blockchain</span> <br>
+                    & Staking Ecosystem
+                </h1>
+
+                <p class="text-gray-300 text-lg leading-relaxed max-w-2xl">
+                    DimeX Chain delivers ultra-fast 4000+ TPS transactions with near-zero gas fees. Stake your DMXC coins for real-time yield, earn 10% direct sponsor commissions, and leverage a 5% Binary Pair Matching model with carry-forward mechanics.
+                </p>
+
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="dash.html" class="px-8 py-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold text-base shadow-xl shadow-amber-500/25 transition-all flex items-center gap-3">
+                        <i class="fas fa-rocket text-black"></i> Launch Web3 Dashboard
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 pt-6 border-t border-gray-800">
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase">Consensus</p>
+                        <p class="text-lg font-bold text-white">QBFT POS</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase">Total Supply</p>
+                        <p class="text-lg font-bold text-amber-400">10B DMXC</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase">Base Price</p>
+                        <p class="text-lg font-bold text-cyan-400">$0.10 USDT</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 flex justify-center relative">
+                <div class="relative w-72 h-72 sm:w-96 sm:h-96 flex items-center justify-center">
+                    <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-500/20 to-cyan-500/20 blur-3xl animate-pulse"></div>
+                    <div class="relative z-10 w-full h-full rounded-3xl glass-panel p-8 flex flex-col items-center justify-center border border-amber-500/30 gold-glow">
+                        <img src="https://raw.githubusercontent.com/dimexchain-coder/native/main/dimex-logo-512x512-removebg-preview.png" 
+                             alt="DimeX Logo" 
+                             class="w-48 h-48 object-contain animate-bounce duration-[3000ms]"
+                             onerror="this.src='https://placehold.co/200x200/111827/F59E0B?text=DMXC'">
+                        <span class="mt-4 text-xs font-mono text-amber-400/80">RPC: https://rpc.dimexchain.com</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- App & Symbol Showcase -->
+        <section class="glass-panel rounded-3xl p-8 sm:p-12 border border-amber-500/20 relative overflow-hidden">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                <div class="md:col-span-4 flex justify-center">
+                    <div class="relative group">
+                        <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-amber-500 to-cyan-500 blur opacity-50 group-hover:opacity-100 transition duration-500"></div>
+                        <img src="https://raw.githubusercontent.com/glomartcom-netizen/Home/main/applogo.jpg" 
+                             alt="DimeX App Symbol" 
+                             class="relative rounded-2xl w-56 h-56 object-cover border-2 border-amber-500/40 shadow-2xl"
+                             onerror="this.src='https://placehold.co/300x300/111827/F59E0B?text=App+Symbol'">
+                    </div>
+                </div>
+                <div class="md:col-span-8 space-y-4">
+                    <span class="text-xs font-bold uppercase tracking-widest text-cyan-400">Official Mobile & Web Ecosystem</span>
+                    <h2 class="text-3xl font-extrabold text-white">DimeX Multi-Asset Mobile DApp</h2>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        Experience decentralized financial control directly from your phone. Seamlessly connect to DimeX Chain, perform native token swaps, manage your 6-month and 1-year staking positions, and monitor your binary leg business volume in real time.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <div class="px-4 py-2 rounded-lg bg-gray-900/80 border border-gray-800 text-xs text-amber-400 flex items-center gap-2">
+                            <i class="fas fa-shield-alt"></i> Non-Custodial Security
+                        </div>
+                        <div class="px-4 py-2 rounded-lg bg-gray-900/80 border border-gray-800 text-xs text-cyan-400 flex items-center gap-2">
+                            <i class="fas fa-bolt"></i> Instant Yield Claiming
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tokenomics & Yield Calculator -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8" id="tokenomics">
+            <div class="lg:col-span-5 glass-card rounded-2xl p-6 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-2">Tokenomics Distribution</h3>
+                    <p class="text-xs text-gray-400 mb-6">Token allocation breakdown for 10 Billion DMXC supply.</p>
+                    <div class="relative h-64 flex items-center justify-center">
+                        <canvas id="tokenomicsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 glass-card rounded-2xl p-6 space-y-6" id="calculator">
+                <h3 class="text-xl font-bold text-white">Staking Yield Calculator</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-2">Select Investment Amount (DMXC)</label>
+                        <input type="number" id="calcAmount" value="10000" oninput="calculateReturns()" class="w-full bg-gray-900/80 border border-gray-700 rounded-xl px-4 py-3 text-amber-400 font-bold focus:border-amber-500 focus:outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="setCalcPlan(0)" id="calcPlan0" class="p-4 rounded-xl border border-amber-500 bg-amber-500/10 text-left transition-all">
+                            <p class="text-xs text-gray-400">Option A</p>
+                            <p class="text-lg font-bold text-amber-400">6 Months</p>
+                            <p class="text-xs text-gray-300">0.25% Daily Yield</p>
+                        </button>
+                        <button onclick="setCalcPlan(1)" id="calcPlan1" class="p-4 rounded-xl border border-gray-700 bg-gray-900/50 text-left transition-all">
+                            <p class="text-xs text-gray-400">Option B</p>
+                            <p class="text-lg font-bold text-white">1 Year</p>
+                            <p class="text-xs text-gray-300">0.30% Daily Yield</p>
+                        </button>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-gray-900/90 border border-amber-500/20 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase">Daily Estimated Yield</p>
+                            <p class="text-lg font-bold text-amber-400" id="calcDaily">25 DMXC</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase">Total Period Return</p>
+                            <p class="text-lg font-bold text-cyan-400" id="calcTotal">4,500 DMXC</p>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <p class="text-[10px] text-gray-400 uppercase">USD Value (~$0.10)</p>
+                            <p class="text-lg font-bold text-emerald-400" id="calcUSD">$450.00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-gray-900 glass-panel mt-20 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center sm:flex sm:justify-between sm:items-center text-xs text-gray-500 space-y-4 sm:space-y-0">
+            <p>© 2026 DimeX Chain Ecosystem. All rights reserved.</p>
+            <div class="flex justify-center space-x-6">
+                <a href="#" class="hover:text-amber-400 transition-colors">RPC Documentation</a>
+                <a href="#" class="hover:text-amber-400 transition-colors">Explorer</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        let calcPlanSelected = 0;
+
+        window.addEventListener('load', () => {
+            initParticleCanvas();
+            initTokenomicsChart();
+            calculateReturns();
+        });
+
+        function setCalcPlan(plan) {
+            calcPlanSelected = plan;
+            if (plan === 0) {
+                document.getElementById('calcPlan0').className = "p-4 rounded-xl border border-amber-500 bg-amber-500/10 text-left transition-all";
+                document.getElementById('calcPlan1').className = "p-4 rounded-xl border border-gray-700 bg-gray-900/50 text-left transition-all";
+            } else {
+                document.getElementById('calcPlan1').className = "p-4 rounded-xl border border-cyan-500 bg-cyan-500/10 text-left transition-all";
+                document.getElementById('calcPlan0').className = "p-4 rounded-xl border border-gray-700 bg-gray-900/50 text-left transition-all";
+            }
+            calculateReturns();
+        }
+
+        function calculateReturns() {
+            const amt = parseFloat(document.getElementById('calcAmount').value) || 0;
+            const dailyRate = calcPlanSelected === 0 ? 0.0025 : 0.0030;
+            const days = calcPlanSelected === 0 ? 180 : 365;
+
+            const dailyYield = amt * dailyRate;
+            const totalYield = dailyYield * days;
+            const usdVal = totalYield * 0.10;
+
+            document.getElementById('calcDaily').innerText = dailyYield.toLocaleString() + " DMXC";
+            document.getElementById('calcTotal').innerText = totalYield.toLocaleString() + " DMXC";
+            document.getElementById('calcUSD').innerText = "$" + usdVal.toLocaleString(undefined, {minimumFractionDigits: 2});
+        }
+
+        function initTokenomicsChart() {
+            const ctx = document.getElementById('tokenomicsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Staking Pool', 'Public Sale & Liquidity', 'Ecosystem Reserve', 'Team & Advisors'],
+                    datasets: [{
+                        data: [50, 25, 15, 10],
+                        backgroundColor: ['#F59E0B', '#06B6D4', '#10B981', '#8B5CF6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#9CA3AF', font: { size: 10 } } } },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        function initParticleCanvas() {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+            function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+            resize();
+            window.addEventListener('resize', resize);
+            const particles = Array.from({ length: 40 }, () => ({
+                x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                radius: Math.random() * 1.5 + 0.5, dx: (Math.random() - 0.5) * 0.4, dy: (Math.random() - 0.5) * 0.4, alpha: Math.random() * 0.5 + 0.2
+            }));
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.x += p.dx; p.y += p.dy;
+                    if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(245, 158, 11, ${p.alpha})`; ctx.fill();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
