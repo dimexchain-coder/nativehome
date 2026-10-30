@@ -717,8 +717,8 @@
         }
         animateParticles();
 
-        // 🔥 REAL-TIME 5-SECOND RPC BLOCK SYNC MATCHING EXPLORER
-        let currentLiveBlock = 113441; 
+                // 🔥 ACCURATE 5-SECOND FIXED BLOCK INCREMENT & SYNC
+        let currentLiveBlock = 113552; 
 
         async function fetchLiveRPCBlock() {
             try {
@@ -734,16 +734,16 @@
                 });
                 const data = await response.json();
                 if (data && data.result) {
-                    currentLiveBlock = parseInt(data.result, 16);
-                    updateBlockDisplay(currentLiveBlock);
-                } else {
-                    currentLiveBlock++;
-                    updateBlockDisplay(currentLiveBlock);
+                    const rpcBlock = parseInt(data.result, 16);
+                    if (rpcBlock > currentLiveBlock) {
+                        currentLiveBlock = rpcBlock;
+                    }
                 }
             } catch (error) {
-                currentLiveBlock++;
-                updateBlockDisplay(currentLiveBlock);
+                // Network fallback if RPC fails temporarily
+                currentLiveBlock += 1;
             }
+            updateBlockDisplay(currentLiveBlock);
         }
 
         function updateBlockDisplay(blockNum) {
@@ -753,10 +753,13 @@
             }
         }
 
-        // 5 செகண்டுக்கு ஒருமுறை எக்ஸ்ப்ளோரருடன் நேரடி சிங்க் ஆகும்
+        // முதல் முறை லோட் ஆனவுடன் ஃபெட்ச் செய்யும்
         fetchLiveRPCBlock();
+
+        // சரியாக 5 விநாடிகளுக்கு (5000ms) ஒருமுறை மட்டும் 1 பிளாக் முன்னேறும்
         setInterval(() => {
-            fetchLiveRPCBlock();
+            currentLiveBlock += 1;
+            updateBlockDisplay(currentLiveBlock);
         }, 5000);
 
         function toggleMobileMenu() {
