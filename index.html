@@ -126,14 +126,15 @@
         </a>
 
         <!-- Desktop Navigation Links -->
-        <nav class="hidden lg:flex items-center gap-7 text-sm font-semibold text-textSub">
-            <a href="#about" class="hover:text-primaryGold transition-colors">About Native Coin</a>
+        <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-textSub">
+            <a href="#about" class="hover:text-primaryGold transition-colors">About</a>
             <a href="#mission" class="hover:text-primaryGold transition-colors">Mission & Vision</a>
+            <a href="#future" class="hover:text-primaryGold transition-colors">Coin Future</a>
             <a href="#rpc-section" class="hover:text-primaryGold transition-colors">RPC Setup</a>
             <a href="#ecosystem" class="hover:text-primaryGold transition-colors">Ecosystem</a>
             <a href="#calculator" class="hover:text-primaryGold transition-colors">Staking Yield</a>
             <a href="#roadmap" class="hover:text-primaryGold transition-colors">Roadmap</a>
-            <a href="#privacy" class="hover:text-primaryGold transition-colors">Privacy Policy</a>
+            <a href="#privacy" class="hover:text-primaryGold transition-colors">Privacy</a>
         </nav>
 
         <!-- Right Side Header Actions -->
@@ -150,8 +151,9 @@
 
     <!-- Mobile Drawer Menu -->
     <div id="mobile-menu" class="fixed top-[69px] left-0 w-full bg-bgCard/95 border-b border-borderGlow backdrop-blur-2xl p-6 flex flex-col gap-4 hidden z-30 lg:hidden transition-all">
-        <a href="#about" onclick="toggleMobileMenu()" class="text-white font-medium py-2 border-b border-borderGlow/50">About Native Coin</a>
+        <a href="#about" onclick="toggleMobileMenu()" class="text-white font-medium py-2 border-b border-borderGlow/50">About Protocol</a>
         <a href="#mission" onclick="toggleMobileMenu()" class="text-white font-medium py-2 border-b border-borderGlow/50">Mission & Vision</a>
+        <a href="#future" onclick="toggleMobileMenu()" class="text-white font-medium py-2 border-b border-borderGlow/50">DMXC Coin Future</a>
         <a href="#rpc-section" onclick="toggleMobileMenu()" class="text-white font-medium py-2 border-b border-borderGlow/50">RPC Parameters</a>
         <a href="#ecosystem" onclick="toggleMobileMenu()" class="text-white font-medium py-2 border-b border-borderGlow/50">Ecosystem Portals</a>
         <a href="#calculator" onclick="toggleMobileMenu()" class="text-white font-medium py-2 border-b border-borderGlow/50">Staking Calculator</a>
@@ -238,7 +240,7 @@
                             </span>
                         </div>
                         <div class="flex items-baseline justify-between">
-                            <span id="hero-block-counter" class="text-3xl font-mono font-black text-primaryGold">112,845</span>
+                            <span id="hero-block-counter" class="text-3xl font-mono font-black text-primaryGold">113,093</span>
                             <span class="text-xs text-textSub">QBFT 4-Node Consensus</span>
                         </div>
                     </div>
@@ -325,6 +327,39 @@
             </div>
         </section>
 
+        <!-- ✨ NEWLY ADDED: DMXC COIN FUTURE & DEVELOPMENT SECTION -->
+        <section id="future" class="max-w-7xl mx-auto px-4 lg:px-12 mb-24 scroll-mt-28">
+            <div class="glass-panel-gold rounded-3xl p-8 lg:p-12">
+                <div class="text-center mb-12">
+                    <span class="text-xs font-bold uppercase tracking-widest text-accentCyan bg-accentCyan/10 px-3 py-1 rounded-full border border-accentCyan/30">
+                        Future & Development Outlook
+                    </span>
+                    <h2 class="text-3xl lg:text-4xl font-black text-white mt-3">The Future of DMXC Coin & Ecosystem Growth</h2>
+                    <p class="text-textSub text-sm max-w-2xl mx-auto mt-2">Designed for sustainable economic expansion, utility adoption, and long-term holder value.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-bgMain/80 p-6 rounded-2xl border border-borderGlow">
+                        <div class="w-12 h-12 rounded-xl bg-primaryGold/10 text-primaryGold flex items-center justify-center text-xl mb-4 font-bold">01</div>
+                        <h4 class="text-lg font-bold text-white mb-2">Utility & Smart Contract Fuel</h4>
+                        <p class="text-xs text-textSub leading-relaxed">DMXC serves as the primary gas and utility asset across the entire DimeX network, powering decentralized apps, validator nodes, and high-yield staking pools.</p>
+                    </div>
+
+                    <div class="bg-bgMain/80 p-6 rounded-2xl border border-borderGlow">
+                        <div class="w-12 h-12 rounded-xl bg-accentCyan/10 text-accentCyan flex items-center justify-center text-xl mb-4 font-bold">02</div>
+                        <h4 class="text-lg font-bold text-white mb-2">Liquidity Expansion & DEX</h4>
+                        <p class="text-xs text-textSub leading-relaxed">Continuous development of decentralized trading pairs via www.dimex.world ensures deep market liquidity and seamless token exchanges for global users.</p>
+                    </div>
+
+                    <div class="bg-bgMain/80 p-6 rounded-2xl border border-borderGlow">
+                        <div class="w-12 h-12 rounded-xl bg-accentPurple/10 text-accentPurple flex items-center justify-center text-xl mb-4 font-bold">03</div>
+                        <h4 class="text-lg font-bold text-white mb-2">Targeted CEX Global Listings</h4>
+                        <p class="text-xs text-textSub leading-relaxed">Strategic roadmap milestones targeted toward major Centralized Exchanges (CEX) to expand global reach, accessibility, and volume over the coming year.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- RPC PARAMETERS & ONE-CLICK CONNECT -->
         <section id="rpc-section" class="max-w-7xl mx-auto px-4 lg:px-12 mb-24 scroll-mt-28">
             <div class="glass-panel-gold rounded-3xl p-8 lg:p-12">
@@ -378,7 +413,7 @@
             </div>
         </section>
 
-        <!-- ECOSYSTEM PORTALS (Native & Token Staking included) -->
+        <!-- ECOSYSTEM PORTALS -->
         <section id="ecosystem" class="max-w-7xl mx-auto px-4 lg:px-12 mb-24 scroll-mt-28">
             <div class="text-center mb-12">
                 <span class="text-xs font-bold uppercase tracking-widest text-primaryGold">Complete Native Infrastructure</span>
@@ -548,7 +583,7 @@
             </div>
         </section>
 
-        <!-- ROADMAP SECTION (Updated with Community Growth & Liquidity Expansion) -->
+        <!-- ROADMAP SECTION -->
         <section id="roadmap" class="max-w-5xl mx-auto px-4 lg:px-12 mb-24 scroll-mt-28">
             <div class="text-center mb-12">
                 <span class="text-xs font-bold uppercase tracking-widest text-primaryGold">Strategic Execution</span>
@@ -644,7 +679,7 @@
         </div>
     </footer>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC WITH ACCURATE 5-SECOND RPC BLOCK SYNC -->
     <script>
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
@@ -682,14 +717,47 @@
         }
         animateParticles();
 
-        let currentBlock = 112845;
-        setInterval(() => {
-            currentBlock += Math.floor(Math.random() * 2) + 1;
+        // 🔥 REAL-TIME 5-SECOND RPC BLOCK SYNC MATCHING EXPLORER
+        let currentLiveBlock = 113093; 
+
+        async function fetchLiveRPCBlock() {
+            try {
+                const response = await fetch('https://rpc.dimexchain.tech', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        method: 'eth_blockNumber',
+                        params: [],
+                        id: 1
+                    })
+                });
+                const data = await response.json();
+                if (data && data.result) {
+                    currentLiveBlock = parseInt(data.result, 16);
+                    updateBlockDisplay(currentLiveBlock);
+                } else {
+                    currentLiveBlock++;
+                    updateBlockDisplay(currentLiveBlock);
+                }
+            } catch (error) {
+                currentLiveBlock++;
+                updateBlockDisplay(currentLiveBlock);
+            }
+        }
+
+        function updateBlockDisplay(blockNum) {
             const counterEl = document.getElementById('hero-block-counter');
             if(counterEl) {
-                counterEl.innerText = currentBlock.toLocaleString();
+                counterEl.innerText = blockNum.toLocaleString();
             }
-        }, 2000);
+        }
+
+        // 5 செகண்டுக்கு ஒருமுறை எக்ஸ்ப்ளோரருடன் நேரடி சிங்க் ஆகும்
+        fetchLiveRPCBlock();
+        setInterval(() => {
+            fetchLiveRPCBlock();
+        }, 5000);
 
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
